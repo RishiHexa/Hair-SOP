@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { getMode, type Mode } from './api'
 import { COLOURS, MAX_STYLES } from './data/hairstyles'
 import { StartStep } from './features/StartStep'
 import { PhotoStep } from './features/PhotoStep'
 import { StylesStep } from './features/StylesStep'
-import { CompareStep } from './features/CompareStep'
+import { CompareStep, type PreviewCache } from './features/CompareStep'
 
 const STEPS = ['Consent', 'Photo', 'Hairstyles', 'Compare']
 
@@ -12,6 +13,12 @@ export default function App() {
   const [photo, setPhoto] = useState<string | null>(null)
   const [selected, setSelected] = useState<string[]>([])
   const [colour, setColour] = useState(COLOURS[0])
+  const [mode, setMode] = useState<Mode>('checking')
+  const previews = useRef<PreviewCache>(new Map())
+
+  useEffect(() => {
+    void getMode().then(setMode)
+  }, [])
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -19,6 +26,8 @@ export default function App() {
 
   function changePhoto(url: string | null) {
     if (photo) URL.revokeObjectURL(photo)
+    for (const job of previews.current.values()) job.then(URL.revokeObjectURL, () => {})
+    previews.current = new Map()
     setPhoto(url)
   }
 
@@ -49,7 +58,7 @@ export default function App() {
         </ol>
       </header>
       <main>
-        {step === 0 && <StartStep onNext={() => setStep(1)} />}
+        {step === 0 && <StartStep mode={mode} onNext={() => setStep(1)} />}
         {step === 1 && (
           <PhotoStep photo={photo} onPhoto={changePhoto} onNext={() => setStep(2)} onBack={() => setStep(0)} />
         )}
@@ -64,7 +73,15 @@ export default function App() {
           />
         )}
         {step === 3 && photo && (
-          <CompareStep photo={photo} selected={selected} colour={colour} onBack={() => setStep(2)} onFinish={finish} />
+          <CompareStep
+            photo={photo}
+            selected={selected}
+            colour={colour}
+            mode={mode}
+            cache={previews.current}
+            onBack={() => setStep(2)}
+            onFinish={finish}
+          />
         )}
       </main>
     </>

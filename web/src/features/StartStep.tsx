@@ -1,6 +1,14 @@
 import { useState } from 'react'
+import type { Mode } from '../api'
 
-export function StartStep({ onNext }: { onNext: () => void }) {
+const NOTES: Record<Mode, string> = {
+  checking: 'Checking the preview service.',
+  live: 'The photo is sent to Cloudflare to create each preview. This app does not store it.',
+  mock: 'Test mode. The photo stays on this computer.',
+  sample: 'In this demo, the photo stays in this browser and is never uploaded.',
+}
+
+export function StartStep({ mode, onNext }: { mode: Mode; onNext: () => void }) {
   const [adult, setAdult] = useState(false)
   const [consent, setConsent] = useState(false)
 
@@ -16,13 +24,13 @@ export function StartStep({ onNext }: { onNext: () => void }) {
         </label>
         <label className="check">
           <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-          <span>My client agrees to their photo being used for this consultation</span>
+          <span>My client agrees to their photo being used to create AI hairstyle previews</span>
         </label>
-        <button className="btn primary" disabled={!adult || !consent} onClick={onNext}>
+        <button className="btn primary" disabled={!adult || !consent || mode === 'checking'} onClick={onNext}>
           Start consultation
         </button>
       </div>
-      <p className="note">In this demo, the photo stays in this browser and is never uploaded.</p>
+      <p className="note">{NOTES[mode]}</p>
     </section>
   )
 }

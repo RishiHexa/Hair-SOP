@@ -4,6 +4,24 @@ const TYPES = ['image/jpeg', 'image/png', 'image/webp']
 const MAX_MB = 10
 const MIN_SIDE = 400
 
+// Previews are 4:5, so the photo is cropped to match and the slider lines up.
+const CROP = { width: 768, height: 960 }
+
+async function cropPhoto(image: HTMLImageElement): Promise<Blob | null> {
+  const scale = Math.max(CROP.width / image.naturalWidth, CROP.height / image.naturalHeight)
+  const w = image.naturalWidth * scale
+  const h = image.naturalHeight * scale
+  const canvas = document.createElement('canvas')
+  canvas.width = CROP.width
+  canvas.height = CROP.height
+  const ctx = canvas.getContext('2d')!
+  ctx.fillStyle = '#fff'
+  ctx.fillRect(0, 0, CROP.width, CROP.height)
+  // Keep more of the top, so hair isn't cut off in tall photos.
+  ctx.drawImage(image, (CROP.width - w) / 2, (CROP.height - h) * 0.25, w, h)
+  return new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.95))
+}
+
 interface Props {
   photo: string | null
   onPhoto: (url: string | null) => void
@@ -34,7 +52,10 @@ export function PhotoStep({ photo, onPhoto, onNext, onBack }: Props) {
       URL.revokeObjectURL(url)
       return setError(`This photo is too small. Use one at least ${MIN_SIDE} pixels wide and tall.`)
     }
-    onPhoto(url)
+    const cropped = await cropPhoto(image)
+    URL.revokeObjectURL(url)
+    if (!cropped) return setError("This photo couldn't be opened. Try another one.")
+    onPhoto(URL.createObjectURL(cropped))
   }
 
   function pick(e: ChangeEvent<HTMLInputElement>) {

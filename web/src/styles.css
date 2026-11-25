@@ -92,3 +92,10 @@ figcaption { display: flex; justify-content: space-between; gap: 1rem; margin-to
   .topbar ol { gap: .8rem; }
   .grid { grid-template-columns: 1fr 1fr; }
 }
+
+.pending { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: .75rem; padding: 1rem; background: #f2f5f4e0; text-align: center; }
+.pending p { margin: 0; }
+.spinner { width: 36px; height: 36px; border: 4px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+.save { width: 100%; margin-top: .6rem; text-decoration: none; color: inherit; }
+@keyframes spin { to { transform: rotate(1turn); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 4s; } }
