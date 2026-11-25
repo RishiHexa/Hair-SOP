@@ -16,9 +16,18 @@ export default function App() {
   const [mode, setMode] = useState<Mode>('checking')
   const previews = useRef<PreviewCache>(new Map())
 
+  // Only checked on the consent page, so the mode can't change after the client agrees to it.
   useEffect(() => {
-    void getMode().then(setMode)
-  }, [])
+    if (step !== 0) return
+    let current = true
+    const check = () => void getMode().then((m) => current && setMode(m))
+    check()
+    const timer = import.meta.env.DEV ? setInterval(check, 4000) : undefined
+    return () => {
+      current = false
+      clearInterval(timer)
+    }
+  }, [step])
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -58,7 +67,7 @@ export default function App() {
         </ol>
       </header>
       <main>
-        {step === 0 && <StartStep mode={mode} onNext={() => setStep(1)} />}
+        {step === 0 && <StartStep key={mode} mode={mode} onNext={() => setStep(1)} />}
         {step === 1 && (
           <PhotoStep photo={photo} onPhoto={changePhoto} onNext={() => setStep(2)} onBack={() => setStep(0)} />
         )}
