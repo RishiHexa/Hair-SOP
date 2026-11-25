@@ -24,7 +24,10 @@ export function StartStep({ mode, onNext }: { mode: Mode; onNext: () => void }) 
         </label>
         <label className="check">
           <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-          <span>My client agrees to their photo being used to create AI hairstyle previews</span>
+          <span>
+            My client agrees to their photo being {mode === 'live' ? 'sent to Cloudflare' : 'used'} to create AI hairstyle
+            previews
+          </span>
         </label>
         <button className="btn primary" disabled={!adult || !consent || mode === 'checking'} onClick={onNext}>
           Start consultation
