@@ -17,8 +17,8 @@ async function cropPhoto(image: HTMLImageElement): Promise<Blob | null> {
   const ctx = canvas.getContext('2d')!
   ctx.fillStyle = '#fff'
   ctx.fillRect(0, 0, CROP.width, CROP.height)
-  // Keep more of the top, so hair isn't cut off in tall photos.
-  ctx.drawImage(image, (CROP.width - w) / 2, (CROP.height - h) * 0.25, w, h)
+  // Crop tall photos from the bottom only, so hair is never cut off.
+  ctx.drawImage(image, (CROP.width - w) / 2, 0, w, h)
   return new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.95))
 }
 

@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Logger } from '@nestjs/common'
 import { HEIGHT, WIDTH, type ImageProvider } from './image-provider.js'
+import { reserveImage } from './usage.js'
 
 const MODEL = '@cf/black-forest-labs/flux-2-klein-4b'
 const TIMEOUT_MS = 60_000
@@ -16,6 +17,7 @@ export class CloudflareProvider implements ImageProvider {
   constructor(private readonly account: string, private readonly token: string) {}
 
   async edit(photo: Buffer, prompt: string): Promise<Buffer> {
+    reserveImage()
     const form = new FormData()
     form.set('prompt', prompt)
     form.set('width', String(WIDTH))

@@ -3,6 +3,7 @@
 !.env.example
 node_modules/
 dist/
+dump 
 
 .vercel/
 *.tsbuildinfo
@@ -10,3 +11,6 @@ dist/
 
 # Test faces and, later, client photos
 quality-test/
+
+# Local image usage counter
+.usage.json

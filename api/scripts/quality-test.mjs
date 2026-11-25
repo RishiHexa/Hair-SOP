@@ -26,14 +26,14 @@ if (IMAGE_PROVIDER !== 'mock' && !(account && token)) throw new Error('Cloudflar
 const provider = IMAGE_PROVIDER === 'mock' ? new MockProvider() : new CloudflareProvider(account.trim(), token.trim())
 console.log(`${files.length} photos, ${files.length * tests.length} images, provider: ${provider.name}`)
 
-// Same 4:5 crop as the web app: centred, keeping more of the top.
+// Same 4:5 crop as the web app: centred, cropping tall photos from the bottom only.
 async function crop(file) {
   const upright = await sharp(readFileSync(file)).rotate().toBuffer({ resolveWithObject: true })
   const { width, height } = upright.info
   const w = Math.min(width, Math.round(height * 0.8))
   const h = Math.min(height, Math.round(width * 1.25))
   return sharp(upright.data)
-    .extract({ left: Math.floor((width - w) / 2), top: Math.floor((height - h) * 0.25), width: w, height: h })
+    .extract({ left: Math.floor((width - w) / 2), top: 0, width: w, height: h })
     .flatten({ background: '#fff' })
     .resize(768, 960)
     .jpeg({ quality: 95 })
