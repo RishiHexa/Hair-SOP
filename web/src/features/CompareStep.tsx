@@ -93,7 +93,7 @@ function BeforeAfter({ photo, style, colour, mode, cache }: BeforeAfterProps) {
       </div>
       <figcaption>
         <strong>{style.name}</strong>
-        <small>{colour.hex ? colour.name : 'Current colour'}</small>
+        <small>{colour.name}</small>
       </figcaption>
       {image && (
         <a className="btn save" href={image} download={`${style.id}-${colour.id}.jpg`}>Save image</a>

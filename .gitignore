@@ -7,3 +7,6 @@ dist/
 .vercel/
 *.tsbuildinfo
 .claude/
+
+# Test faces and, later, client photos
+quality-test/

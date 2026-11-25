@@ -7,7 +7,7 @@ import {
 
 interface Props {
   selected: string[]
-  colour: HairColour
+  colour: HairColour | null
   onToggle: (id: string) => void
   onColour: (colour: HairColour) => void
   onNext: () => void
@@ -52,8 +52,8 @@ export function StylesStep({ selected, colour, onToggle, onColour, onNext, onBac
       <div className="filter" role="group" aria-label="Colour">
         <span>Colour</span>
         {COLOURS.map((c) => (
-          <button key={c.id} className="chip" aria-pressed={colour.id === c.id} onClick={() => onColour(c)}>
-            {c.hex && <i className="swatch" style={{ background: c.hex }} />}
+          <button key={c.id} className="chip" aria-pressed={colour?.id === c.id} onClick={() => onColour(c)}>
+            <i className="swatch" style={{ background: c.hex }} />
             {c.name}
           </button>
         ))}
@@ -70,7 +70,7 @@ export function StylesStep({ selected, colour, onToggle, onColour, onNext, onBac
             const on = selected.includes(s.id)
             return (
               <button key={s.id} className="card" aria-pressed={on} disabled={full && !on} onClick={() => onToggle(s.id)}>
-                <StyleArt style={s} colour={colour.hex} />
+                <StyleArt style={s} colour={colour?.hex ?? null} />
                 <strong>{s.name}</strong>
                 <small>{s.length}, {s.texture.toLowerCase()}</small>
               </button>
@@ -81,8 +81,8 @@ export function StylesStep({ selected, colour, onToggle, onColour, onNext, onBac
 
       <footer className="actions">
         <button className="btn" onClick={onBack}>Back</button>
-        <span aria-live="polite">{selected.length} of {MAX_STYLES} selected</span>
-        <button className="btn primary" disabled={selected.length === 0} onClick={onNext}>Compare</button>
+        <span aria-live="polite">{selected.length} of {MAX_STYLES} selected{!colour && '. Choose a colour'}</span>
+        <button className="btn primary" disabled={selected.length === 0 || !colour} onClick={onNext}>Compare</button>
       </footer>
     </section>
   )

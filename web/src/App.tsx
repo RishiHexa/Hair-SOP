@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { getMode, type Mode } from './api'
-import { COLOURS, MAX_STYLES } from './data/hairstyles'
+import { MAX_STYLES, type HairColour } from './data/hairstyles'
 import { StartStep } from './features/StartStep'
 import { PhotoStep } from './features/PhotoStep'
 import { StylesStep } from './features/StylesStep'
@@ -12,7 +12,7 @@ export default function App() {
   const [step, setStep] = useState(0)
   const [photo, setPhoto] = useState<string | null>(null)
   const [selected, setSelected] = useState<string[]>([])
-  const [colour, setColour] = useState(COLOURS[0])
+  const [colour, setColour] = useState<HairColour | null>(null)
   const [mode, setMode] = useState<Mode>('checking')
   const previews = useRef<PreviewCache>(new Map())
 
@@ -41,7 +41,7 @@ export default function App() {
   function finish() {
     changePhoto(null)
     setSelected([])
-    setColour(COLOURS[0])
+    setColour(null)
     setStep(0)
   }
 
@@ -72,7 +72,7 @@ export default function App() {
             onBack={() => setStep(1)}
           />
         )}
-        {step === 3 && photo && (
+        {step === 3 && photo && colour && (
           <CompareStep
             photo={photo}
             selected={selected}

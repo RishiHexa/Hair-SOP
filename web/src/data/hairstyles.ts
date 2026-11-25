@@ -15,7 +15,7 @@ export interface Hairstyle {
 export interface HairColour {
   id: string
   name: string
-  hex: string | null
+  hex: string
 }
 
 export const LENGTHS: Length[] = ['Short', 'Medium', 'Long']
@@ -34,13 +34,14 @@ export const HAIRSTYLES: Hairstyle[] = [
   { id: 'long-straight', name: 'Long and sleek', length: 'Long', texture: 'Straight', back: 'long', front: 'center' },
   { id: 'long-waves', name: 'Long waves', length: 'Long', texture: 'Wavy', back: 'wavy', front: 'side' },
   { id: 'top-bun', name: 'Top bun', length: 'Long', texture: 'Straight', back: 'bun', front: 'buzz' },
-  { id: 'ponytail', name: 'Ponytail', length: 'Long', texture: 'Wavy', back: 'pony', front: 'swept' },
+  { id: 'ponytail', name: 'Ponytail', length: 'Long', texture: 'Straight', back: 'pony', front: 'swept' },
 ]
 
 export const COLOURS: HairColour[] = [
-  { id: 'keep', name: 'Keep current', hex: null },
   { id: 'black', name: 'Black', hex: '#1f1b1c' },
+  { id: 'dark-brown', name: 'Dark brown', hex: '#35231b' },
   { id: 'brown', name: 'Brown', hex: '#5a3825' },
+  { id: 'light-brown', name: 'Light brown', hex: '#8f6540' },
   { id: 'auburn', name: 'Auburn', hex: '#8c3b22' },
   { id: 'copper', name: 'Copper', hex: '#c0662f' },
   { id: 'blonde', name: 'Blonde', hex: '#d9b36a' },
